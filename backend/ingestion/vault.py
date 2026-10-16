@@ -134,6 +134,106 @@ VAULT_DATA: Dict[str, Dict[str, Any]] = {
                 "summary": "Unchecked stream length parsing in raw-body causes unhandled denial of service."
             }
         ]
+    },
+    "pypi:requests@2.25.0": {
+        "system": "pypi",
+        "package": "requests",
+        "version": "2.25.0",
+        "packages": [
+            {"name": "requests", "version": "2.25.0", "relation": "root", "clean_version": "2.28.2"},
+            {"name": "urllib3", "version": "1.25.8", "relation": "direct", "clean_version": "1.26.5", "semver_type": "patch"},
+            {"name": "chardet", "version": "3.0.4", "relation": "direct", "clean_version": "4.0.0", "semver_type": "minor"},
+            {"name": "idna", "version": "2.10", "relation": "direct", "clean_version": "3.3", "semver_type": "minor"},
+            {"name": "certifi", "version": "2020.12.5", "relation": "direct", "clean_version": "2023.7.22", "semver_type": "patch"},
+        ],
+        "dependencies": [
+            ("requests@2.25.0", "urllib3@1.25.8"),
+            ("requests@2.25.0", "chardet@3.0.4"),
+            ("requests@2.25.0", "idna@2.10"),
+            ("requests@2.25.0", "certifi@2020.12.5"),
+        ],
+        "advisories": [
+            {
+                "package": "urllib3@1.25.8",
+                "id": "GHSA-r64q-w8jr-g9qp",
+                "cvss3": 7.5,
+                "severity": "HIGH",
+                "summary": "CRLF injection and HTTP request smuggling via unencoded carriage returns in urllib3."
+            }
+        ]
+    },
+    "cargo:tokio@0.2.0": {
+        "system": "cargo",
+        "package": "tokio",
+        "version": "0.2.0",
+        "packages": [
+            {"name": "tokio", "version": "0.2.0", "relation": "root", "clean_version": "0.2.25"},
+            {"name": "bytes", "version": "0.4.12", "relation": "direct", "clean_version": "0.5.6", "semver_type": "minor"},
+            {"name": "mio", "version": "0.6.21", "relation": "direct", "clean_version": "0.6.23", "semver_type": "patch"},
+            {"name": "pin-project-lite", "version": "0.1.1", "relation": "direct", "clean_version": "0.2.0", "semver_type": "minor"},
+            {"name": "net2", "version": "0.2.33", "relation": "transitive", "clean_version": "0.2.37", "semver_type": "patch"},
+        ],
+        "dependencies": [
+            ("tokio@0.2.0", "bytes@0.4.12"),
+            ("tokio@0.2.0", "mio@0.6.21"),
+            ("tokio@0.2.0", "pin-project-lite@0.1.1"),
+            ("mio@0.6.21", "net2@0.2.33"),
+        ],
+        "advisories": [
+            {
+                "package": "bytes@0.4.12",
+                "id": "RUSTSEC-2020-0063",
+                "cvss3": 8.1,
+                "severity": "HIGH",
+                "summary": "Memory safety violation / Use-After-Free in bytes::BytesMut due to unchecked buffer slice offsets."
+            }
+        ]
+    },
+    "maven:spring-boot-starter-log4j2@2.5.0": {
+        "system": "maven",
+        "package": "spring-boot-starter-log4j2",
+        "version": "2.5.0",
+        "packages": [
+            {"name": "spring-boot-starter-log4j2", "version": "2.5.0", "relation": "root", "clean_version": "2.5.8"},
+            {"name": "log4j-core", "version": "2.14.1", "relation": "direct", "clean_version": "2.17.1", "semver_type": "patch"},
+            {"name": "log4j-api", "version": "2.14.1", "relation": "transitive", "clean_version": "2.17.1", "semver_type": "patch"},
+        ],
+        "dependencies": [
+            ("spring-boot-starter-log4j2@2.5.0", "log4j-core@2.14.1"),
+            ("log4j-core@2.14.1", "log4j-api@2.14.1"),
+        ],
+        "advisories": [
+            {
+                "package": "log4j-core@2.14.1",
+                "id": "GHSA-jfh8-c2jp-5v3q",
+                "cvss3": 10.0,
+                "severity": "CRITICAL",
+                "summary": "Log4Shell: Remote Code Execution via JNDI lookup vulnerability in Apache Log4j2 (CVE-2021-44228)."
+            }
+        ]
+    },
+    "go:gin@1.6.3": {
+        "system": "go",
+        "package": "gin",
+        "version": "1.6.3",
+        "packages": [
+            {"name": "gin", "version": "1.6.3", "relation": "root", "clean_version": "1.7.4"},
+            {"name": "crypto", "version": "0.0.1", "relation": "direct", "clean_version": "0.1.0", "semver_type": "patch"},
+            {"name": "sys", "version": "0.0.1", "relation": "transitive", "clean_version": "0.1.0", "semver_type": "patch"},
+        ],
+        "dependencies": [
+            ("gin@1.6.3", "crypto@0.0.1"),
+            ("crypto@0.0.1", "sys@0.0.1"),
+        ],
+        "advisories": [
+            {
+                "package": "crypto@0.0.1",
+                "id": "GHSA-x4vf-92v8-55p9",
+                "cvss3": 7.5,
+                "severity": "HIGH",
+                "summary": "Incorrect calculation in curve operations allows elliptic curve key recovery in golang.org/x/crypto."
+            }
+        ]
     }
 }
 

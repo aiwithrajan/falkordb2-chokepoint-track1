@@ -56,8 +56,12 @@ export const TargetSelector: React.FC<TargetSelectorProps> = ({
                 onChange={(e) => setSystem(e.target.value)}
                 className="w-full bg-[#040308] border border-white/10 hover:border-white/20 rounded-xl px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#8d62eb] transition"
               >
-                <option value="npm">npm</option>
-                <option value="pypi">PyPI</option>
+                <option value="npm">npm (Node.js)</option>
+                <option value="pypi">PyPI (Python)</option>
+                <option value="cargo">Cargo (Rust)</option>
+                <option value="go">Go (Golang)</option>
+                <option value="maven">Maven (Java)</option>
+                <option value="nuget">NuGet (.NET)</option>
               </select>
             </div>
             <div>
@@ -143,6 +147,9 @@ export const TargetSelector: React.FC<TargetSelectorProps> = ({
               >
                 <div>
                   <div className="font-mono font-bold flex items-center gap-1.5 text-white">
+                    <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/10 text-white/70 font-semibold border border-white/10">
+                      {p.system}
+                    </span>
                     <span>{p.package}</span>
                     <span className="text-[11px] text-[#737373]">@{p.version}</span>
                   </div>
