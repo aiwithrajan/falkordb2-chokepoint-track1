@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "chokepoint": {
+      "command": "python",
+      "args": ["-m", "backend.mcp.server"],
+      "env": {
+        "FALKORDB_HOST": "localhost",
+        "FALKORDB_PORT": "6379"
+      }
+    }
+  }
+}
