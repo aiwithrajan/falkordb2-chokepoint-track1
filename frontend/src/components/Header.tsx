@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Zap,
   ShieldCheck,
-  Cpu,
   BarChart2,
   Volume2,
   VolumeX,
@@ -36,114 +35,125 @@ export const Header: React.FC<HeaderProps> = ({
     setSoundOn(newState);
   };
 
-  const navItems = [
-    { id: "home", label: "Story & Impact", icon: Sparkles },
-    { id: "console", label: "Live War Room", icon: LayoutDashboard },
-    { id: "simulator", label: "Exploit Simulator", icon: Flame },
-    { id: "architecture", label: "Architecture & Math", icon: Layers }
+  const navLinks = [
+    { id: "home", label: "STORY & IMPACT" },
+    { id: "console", label: "LIVE WAR ROOM" },
+    { id: "simulator", label: "EXPLOIT SIMULATOR" },
+    { id: "architecture", label: "ARCHITECTURE & MATH" }
   ] as const;
 
   return (
-    <header className="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
-      {/* Brand & Project Tag */}
-      <div className="flex items-center space-x-3 cursor-pointer" onClick={() => onSwitchView("home")}>
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/25 ring-1 ring-white/20">
-          <Zap className="w-5 h-5 text-amber-300 fill-amber-300" />
+    <header className="border-b border-[#1f1f1f] bg-black sticky top-0 z-50 px-6 sm:px-8 py-3.5 flex items-center justify-between gap-6 transition-colors">
+      {/* Brand Identity (Left) */}
+      <div
+        className="flex items-center gap-3.5 cursor-pointer group select-none"
+        onClick={() => {
+          sound.playClick();
+          onSwitchView("home");
+        }}
+        title="ChokePoint Home"
+      >
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 flex items-center justify-center font-bold text-white shadow-[0_0_15px_rgba(99,102,241,0.35)] ring-1 ring-white/20 group-hover:scale-105 transition-transform">
+          <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
         </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-base font-black tracking-tight text-white flex items-center gap-1.5">
-              ChokePoint
-            </h1>
-            <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded font-mono font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-              Track 01
+        <div className="flex flex-col">
+          <div className="flex items-center gap-2.5">
+            <span className="text-[17px] font-extrabold tracking-[0.14em] text-white uppercase font-sans">
+              CHOKEPOINT
+            </span>
+            <span className="text-[9px] uppercase tracking-[0.18em] px-2 py-0.5 rounded-full font-mono font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
+              TRACK 01
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 font-mono hidden sm:block">
-            FalkorDB GraphBLAS Min-Cut Agent
-          </p>
+          <span className="text-[9px] tracking-[0.24em] text-neutral-400 uppercase font-mono font-medium hidden sm:block">
+            AUTONOMOUS SUPPLY-CHAIN MIN-CUT AGENT
+          </span>
         </div>
       </div>
 
-      {/* Center Navigation Tabs */}
-      <nav className="hidden md:flex items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeView === item.id;
+      {/* Center Navigation Links (Track 3 Style - Clean Page Transfer Links, No Slider Box) */}
+      <nav className="hidden md:flex items-center gap-7 lg:gap-9">
+        {navLinks.map((link) => {
+          const isActive = activeView === link.id;
           return (
             <button
-              key={item.id}
+              key={link.id}
               onClick={() => {
                 sound.playClick();
-                onSwitchView(item.id);
+                onSwitchView(link.id);
               }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+              className={`text-[11.5px] uppercase tracking-[0.18em] font-semibold transition-all duration-200 relative py-2 ${
                 isActive
-                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
-                  : "text-slate-400 hover:text-white hover:bg-slate-900"
+                  ? "text-white font-bold"
+                  : "text-neutral-400 hover:text-white"
               }`}
             >
-              <Icon className={`w-3.5 h-3.5 ${isActive ? "text-amber-300" : ""}`} />
-              <span>{item.label}</span>
+              <span>{link.label}</span>
+              {isActive && (
+                <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 via-violet-400 to-amber-300 rounded-full shadow-[0_0_8px_rgba(99,102,241,0.9)]" />
+              )}
             </button>
           );
         })}
-      </nav>
 
-      {/* Right Action Tools & Status */}
-      <div className="flex items-center gap-2.5">
-        {/* Ask AI Copilot Button */}
-        <button
-          onClick={() => {
-            sound.playClick();
-            onOpenAIChat();
-          }}
-          className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-950/80 hover:bg-indigo-900 text-indigo-200 border border-indigo-500/40 shadow-sm transition"
-        >
-          <Bot className="w-3.5 h-3.5 text-indigo-400" />
-          <span className="hidden sm:inline">Ask AI Agent</span>
-        </button>
-
-        {/* Rule 3 Benchmark Trigger */}
+        {/* Rule 3 Ablation Link */}
         <button
           onClick={() => {
             sound.playClick();
             onOpenBenchmark();
           }}
-          className="hidden sm:flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+          className="text-[11.5px] uppercase tracking-[0.18em] font-semibold text-neutral-400 hover:text-white transition-all duration-200 py-2 flex items-center gap-1.5"
         >
           <BarChart2 className="w-3.5 h-3.5 text-indigo-400" />
-          <span>Rule 3 Ablation</span>
+          <span>RULE 3 ABLATION</span>
+        </button>
+      </nav>
+
+      {/* Right Header Controls & Status */}
+      <div className="flex items-center gap-3">
+        {/* Ask AI Copilot Button (Track 3 Pill Style) */}
+        <button
+          onClick={() => {
+            sound.playClick();
+            onOpenAIChat();
+          }}
+          className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.16em] uppercase px-4 py-2 rounded-full border border-indigo-500/40 bg-indigo-500/10 hover:bg-indigo-500/20 hover:border-indigo-500/70 text-indigo-200 transition-all shadow-[0_0_12px_rgba(99,102,241,0.2)] hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <Bot className="w-3.5 h-3.5 text-indigo-300" />
+          <span>ASK AI AGENT</span>
         </button>
 
         {/* Audio Sound FX Toggle */}
         <button
           onClick={toggleSound}
           title={soundOn ? "Mute futuristic audio effects" : "Unmute futuristic audio effects"}
-          className={`p-1.5 rounded-lg border transition ${
+          className={`p-2 rounded-lg border transition ${
             soundOn
-              ? "bg-slate-800 border-slate-700 text-indigo-400 hover:text-indigo-300"
-              : "bg-slate-950 border-slate-850 text-slate-500 hover:text-slate-400"
+              ? "bg-neutral-900 border-neutral-800 text-indigo-400 hover:text-indigo-300 hover:border-neutral-700"
+              : "bg-black border-neutral-800 text-neutral-500 hover:text-neutral-400"
           }`}
         >
           {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
         </button>
 
-        {/* FalkorDB Engine Status */}
+        {/* FalkorDB Engine Status Badge */}
         <div
-          className={`flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-lg border ${
+          className={`hidden sm:flex items-center gap-2 text-[10px] font-mono tracking-wider px-3 py-1.5 rounded-full border ${
             falkorConnected
-              ? "bg-emerald-950/60 text-emerald-300 border-emerald-800/60"
-              : "bg-rose-950/60 text-rose-300 border-rose-800/60"
+              ? "bg-neutral-950 text-neutral-300 border-neutral-800"
+              : "bg-rose-950/40 text-rose-300 border-rose-900/60"
           }`}
         >
           <span
             className={`w-2 h-2 rounded-full ${
-              falkorConnected ? "bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400" : "bg-rose-400"
+              falkorConnected
+                ? "bg-emerald-400 shadow-[0_0_8px_#34d399] animate-pulse"
+                : "bg-rose-400"
             }`}
           />
-          <ShieldCheck className="w-3.5 h-3.5 hidden sm:inline" />
-          <span>{falkorConnected ? "FalkorDB Online" : "Disconnected"}</span>
+          <span className="uppercase font-bold tracking-[0.12em]">
+            {falkorConnected ? "FalkorDB Online" : "Offline"}
+          </span>
         </div>
       </div>
     </header>

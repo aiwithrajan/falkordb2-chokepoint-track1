@@ -35,7 +35,7 @@ export const HomeHero: React.FC<HomeHeroProps> = ({
   onSelectPreset
 }) => {
   return (
-    <div className="w-full min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans overflow-x-hidden relative">
+    <div className="w-full min-h-screen bg-black text-slate-100 flex flex-col font-sans overflow-x-hidden relative">
       {/* Background Neon Glows & Grid Mesh */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none overflow-hidden">
         <div className="absolute -top-32 left-1/4 w-[500px] h-[500px] bg-indigo-600/15 rounded-full blur-[140px]" />
