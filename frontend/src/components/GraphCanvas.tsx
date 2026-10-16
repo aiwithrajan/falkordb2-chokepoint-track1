@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import cytoscape from "cytoscape";
 // @ts-ignore
 import dagre from "cytoscape-dagre";
-import { Eye, Shield, Check, Info, ZoomIn, ZoomOut, Maximize2, Flame, RefreshCw } from "lucide-react";
+import { Eye, Shield, Check, Info, ZoomIn, ZoomOut, Maximize2, Flame, ArrowRight } from "lucide-react";
 import type { CytoscapeData, AnalysisResult } from "../types";
 import { sound } from "../utils/sound";
 
@@ -33,7 +33,6 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
     }
 
     const cutPackageNames = new Set(result?.proposed_changes?.map((c) => c.name) || []);
-    const isApproved = result?.status === "clean";
 
     // Prepare elements with classes
     const styledNodes = graphData.nodes.map((n) => {
@@ -45,7 +44,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
       };
     });
 
-    // Style configuration with high-impact cyber-glow aesthetic
+    // Style configuration with Kog-style obsidian & electric violet palette
     const cy = cytoscape({
       container: containerRef.current,
       elements: [...styledNodes, ...graphData.edges],
@@ -56,15 +55,15 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
             "label": "data(label)",
             "text-valign": "bottom",
             "text-margin-y": 6,
-            "color": "#cbd5e1",
+            "color": "#b5b5b5",
             "font-family": "Inter, sans-serif",
             "font-size": "9px",
             "font-weight": 600,
             "text-wrap": "wrap",
             "text-max-width": "90px",
-            "background-color": "#1e293b",
-            "border-width": 2,
-            "border-color": "#475569",
+            "background-color": "#161420",
+            "border-width": 1.5,
+            "border-color": "rgba(255, 255, 255, 0.2)",
             "width": 32,
             "height": 32,
             "transition-property": "background-color, border-color, width, height",
@@ -75,12 +74,12 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
         {
           selector: "node[relation = 'root']",
           style: {
-            "background-color": "#4f46e5",
-            "border-color": "#818cf8",
+            "background-color": "#8d62eb",
+            "border-color": "#a982ff",
             "border-width": 3,
             "width": 44,
             "height": 44,
-            "color": "#e0e7ff",
+            "color": "#ffffff",
             "font-size": "11px",
             "font-weight": 700
           }
@@ -91,14 +90,14 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
           style: {
             "shape": "diamond",
             "background-color": "#991b1b",
-            "border-color": "#ef4444",
+            "border-color": "#f43f5e",
             "border-width": 2,
-            "color": "#fca5a5",
+            "color": "#fda4af",
             "width": 30,
             "height": 30
           }
         },
-        // Chokepoint / Bottleneck Cut Nodes (High-Energy Amber Pulsing Glow)
+        // Chokepoint / Bottleneck Cut Nodes (High-Energy Electric Amber Glow)
         {
           selector: "node.chokepoint",
           style: {
@@ -116,19 +115,19 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
           selector: "edge",
           style: {
             "width": 1.5,
-            "line-color": "#334155",
-            "target-arrow-color": "#475569",
+            "line-color": "#272535",
+            "target-arrow-color": "#434055",
             "target-arrow-shape": "triangle",
             "curve-style": "bezier",
-            "opacity": 0.75
+            "opacity": 0.8
           }
         },
         // Attack Reachability / CVE Edges
         {
           selector: "edge[type = 'affected_by']",
           style: {
-            "line-color": "#ef4444",
-            "target-arrow-color": "#ef4444",
+            "line-color": "#f43f5e",
+            "target-arrow-color": "#f43f5e",
             "line-style": "dashed",
             "width": 2,
             "opacity": 0.95
@@ -181,54 +180,54 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl flex flex-col h-full min-h-[540px] relative ring-1 ring-white/5">
+    <div className="bg-[#09080e] border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col h-full min-h-[560px] relative text-left font-sans">
       {/* Canvas Header */}
-      <div className="flex flex-wrap items-center justify-between pb-3.5 border-b border-slate-800 mb-2 gap-2">
+      <div className="flex flex-wrap items-center justify-between pb-4 border-b border-white/10 mb-2 gap-3">
         <div className="flex items-center gap-2">
-          <Eye className="w-4 h-4 text-indigo-400" />
-          <h2 className="text-xs uppercase tracking-wider font-mono font-bold text-slate-200">
-            FalkorDB Connected Topology & Blast Radius
+          <span className="text-[#a982ff] font-mono text-sm font-bold">&gt;</span>
+          <h2 className="text-xs uppercase tracking-wider font-mono font-bold text-white flex items-center gap-2">
+            <span>Connected Topology &amp; Blast Radius</span>
           </h2>
         </div>
 
         {/* Legend Badges */}
-        <div className="flex items-center gap-3 text-[11px] font-mono text-slate-400">
+        <div className="flex items-center gap-3 text-[11px] font-mono text-[#b5b5b5]">
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-sm shadow-indigo-500" /> Root App
+            <span className="w-2.5 h-2.5 rounded-full bg-[#8d62eb] shadow-[0_0_8px_#8d62eb]" /> Root App
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-sm shadow-amber-400 ring-2 ring-amber-400/40" /> Min-Cut Bottleneck
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_#f59e0b] ring-2 ring-amber-400/40" /> Min-Cut Bottleneck
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rotate-45 bg-rose-600 shadow-sm shadow-rose-600" /> CVE Advisory
+            <span className="w-2.5 h-2.5 rotate-45 bg-rose-600 shadow-[0_0_8px_#e11d48]" /> CVE Advisory
           </span>
         </div>
       </div>
 
       {/* Cytoscape Viewport Container */}
-      <div className="flex-1 w-full bg-slate-950/90 rounded-xl border border-slate-800/80 relative overflow-hidden">
-        <div ref={containerRef} className="w-full h-full min-h-[400px]" />
+      <div className="flex-1 w-full bg-[#040308] rounded-xl border border-white/10 relative overflow-hidden">
+        <div ref={containerRef} className="w-full h-full min-h-[420px]" />
 
         {/* Floating Zoom / Control Toolbar */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-20 bg-slate-900/80 backdrop-blur-md p-1 rounded-lg border border-slate-700/60 shadow-lg">
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-20 bg-[#09080e]/90 backdrop-blur-md p-1.5 rounded-xl border border-white/10 shadow-xl">
           <button
             onClick={handleZoomIn}
             title="Zoom In"
-            className="p-1.5 rounded hover:bg-slate-800 text-slate-300 hover:text-white transition"
+            className="p-1.5 rounded-lg hover:bg-white/10 text-[#b5b5b5] hover:text-white transition"
           >
             <ZoomIn className="w-4 h-4" />
           </button>
           <button
             onClick={handleZoomOut}
             title="Zoom Out"
-            className="p-1.5 rounded hover:bg-slate-800 text-slate-300 hover:text-white transition"
+            className="p-1.5 rounded-lg hover:bg-white/10 text-[#b5b5b5] hover:text-white transition"
           >
             <ZoomOut className="w-4 h-4" />
           </button>
           <button
             onClick={handleFit}
             title="Fit to Screen"
-            className="p-1.5 rounded hover:bg-slate-800 text-slate-300 hover:text-white transition"
+            className="p-1.5 rounded-lg hover:bg-white/10 text-[#b5b5b5] hover:text-white transition"
           >
             <Maximize2 className="w-4 h-4" />
           </button>
@@ -241,45 +240,45 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
               sound.playClick();
               onLaunchSimulator();
             }}
-            className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-950/80 hover:bg-rose-900/90 text-rose-300 border border-rose-600/40 text-xs font-mono font-semibold shadow-lg backdrop-blur-md transition group"
+            className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-950/80 hover:bg-rose-900/90 text-rose-300 border border-rose-500/40 text-[11px] font-mono font-semibold shadow-lg backdrop-blur-md transition group"
           >
             <Flame className="w-3.5 h-3.5 text-rose-400 group-hover:scale-110 transition-transform" />
-            <span>Simulate Transitive Exploit</span>
+            <span>Simulate Transitive Exploit &rarr;</span>
           </button>
         )}
 
         {/* Selected Node Inspector Drawer */}
         {selectedNode && (
-          <div className="absolute top-3 right-3 bg-slate-900/95 backdrop-blur-md border border-indigo-500/40 rounded-xl p-3.5 text-xs w-72 shadow-2xl z-20 font-mono ring-1 ring-white/10 animate-fade-in">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
-              <span className="font-bold text-indigo-300 truncate max-w-[170px]">
+          <div className="absolute top-3 right-3 bg-[#09080e]/95 backdrop-blur-md border border-[#8d62eb]/40 rounded-xl p-4 text-xs w-72 shadow-2xl z-20 font-mono ring-1 ring-white/10 animate-fade-in space-y-2">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2">
+              <span className="font-bold text-[#a982ff] truncate max-w-[170px]">
                 {selectedNode.name || selectedNode.id}
               </span>
-              <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+              <span className="text-[10px] uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/80 border border-white/10">
                 {selectedNode.type}
               </span>
             </div>
 
             {selectedNode.version && (
-              <div className="text-[11px] text-slate-300">
+              <div className="text-[11px] text-[#b5b5b5]">
                 Version: <span className="text-white font-semibold">{selectedNode.version}</span>
               </div>
             )}
 
             {selectedNode.cvss && (
-              <div className="text-[11px] text-rose-400 font-bold mt-1">
+              <div className="text-[11px] text-rose-400 font-bold">
                 CVSS: {selectedNode.cvss} ({selectedNode.severity})
               </div>
             )}
 
             {selectedNode.summary && (
-              <div className="text-[10px] text-slate-400 mt-1.5 line-clamp-3 font-sans leading-snug">
+              <div className="text-[10px] text-[#b5b5b5] line-clamp-3 font-sans leading-snug">
                 {selectedNode.summary}
               </div>
             )}
 
             {selectedNode.clean_version && (
-              <div className="mt-2.5 text-[11px] text-emerald-300 bg-emerald-950/70 p-2 rounded-lg border border-emerald-500/40">
+              <div className="mt-2 text-[11px] text-emerald-300 bg-emerald-950/60 p-2 rounded-lg border border-emerald-500/40">
                 Remediation target: <strong className="text-white">{selectedNode.clean_version}</strong>
               </div>
             )}
@@ -287,27 +286,30 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
         )}
       </div>
 
-      {/* Action / Reversibility Gate Bar at Bottom */}
+      {/* Action / Reversibility Gate Bar at Bottom (Kog Style) */}
       {result?.proposed_changes && result.proposed_changes.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
           <div className="text-xs">
-            <div className="font-semibold text-slate-200 flex items-center gap-1.5">
+            <div className="font-semibold text-white flex items-center gap-2">
               <Shield className="w-4 h-4 text-amber-400" />
               <span>Chokepoint Proposal: Override {result.proposed_changes.length} Bottleneck(s)</span>
             </div>
-            <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+            <div className="text-[11px] text-[#737373] font-mono mt-0.5">
               Severs {result.initial_vulnerabilities} CVE attack paths &bull; Proof: {result.verification_proof?.proof}
             </div>
           </div>
+
+          {/* Kog-Style High-Contrast White Pill Button */}
           <button
             onClick={() => {
               sound.playClick();
               onOpenApproval();
             }}
-            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/30"
+            className="px-5 py-2.5 rounded-full bg-white text-black hover:bg-neutral-200 text-xs font-bold transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.25)] transform hover:scale-[1.02] active:scale-[0.98]"
           >
             <Check className="w-4 h-4" />
-            <span>Approve & Export 1-Click PR</span>
+            <span>Approve &amp; Export 1-Click PR</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
       )}

@@ -162,42 +162,64 @@ export function App() {
       )}
 
       {activeView === "console" && (
-        <main className="flex-1 max-w-[1650px] w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start animate-fade-in">
-          {/* Column 1: Controls & Battleground Selector (3 cols) */}
-          <section className="lg:col-span-3">
-            <TargetSelector
-              system={system}
-              setSystem={setSystem}
-              pkg={pkg}
-              setPkg={setPkg}
-              version={version}
-              setVersion={setVersion}
-              presets={presets}
-              onSelectPreset={handleSelectPreset}
-              onRunAgent={handleRunAgent}
-              isLoading={isLoading}
-            />
-          </section>
+        <div className="flex-1 max-w-[1680px] w-full mx-auto p-4 sm:p-8 space-y-6 animate-fade-in text-left">
+          {/* Top Mission Command Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-3">
+            <div className="space-y-1">
+              <div className="text-[11px] font-mono uppercase tracking-widest text-[#a982ff]">
+                &gt; Autonomous War Room Console
+              </div>
+              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                FalkorDB Decide-and-Act Control Center
+              </h1>
+            </div>
 
-          {/* Column 2: Agent Telemetry & Reasoning Log (4 cols) */}
-          <section className="lg:col-span-4 h-full">
-            <AgentTelemetry
-              trace={trace}
-              result={result}
-              isLoading={isLoading}
-            />
-          </section>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-mono text-[#b5b5b5] bg-white/5 px-3.5 py-1.5 rounded-full border border-white/10 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Active Target: <strong className="text-white">{pkg}@{version}</strong></span>
+              </span>
+            </div>
+          </div>
 
-          {/* Column 3: Cytoscape Physics Graph & Proof (5 cols) */}
-          <section className="lg:col-span-5 h-full">
-            <GraphCanvas
-              graphData={graphData}
-              result={result}
-              onOpenApproval={() => setIsApprovalOpen(true)}
-              onLaunchSimulator={() => setActiveView("simulator")}
-            />
-          </section>
-        </main>
+          {/* Main 3-Column Command Grid */}
+          <main className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Column 1: Controls & Battleground Selector (3 cols) */}
+            <section className="lg:col-span-3">
+              <TargetSelector
+                system={system}
+                setSystem={setSystem}
+                pkg={pkg}
+                setPkg={setPkg}
+                version={version}
+                setVersion={setVersion}
+                presets={presets}
+                onSelectPreset={handleSelectPreset}
+                onRunAgent={handleRunAgent}
+                isLoading={isLoading}
+              />
+            </section>
+
+            {/* Column 2: Agent Telemetry & Reasoning Log (4 cols) */}
+            <section className="lg:col-span-4 h-full">
+              <AgentTelemetry
+                trace={trace}
+                result={result}
+                isLoading={isLoading}
+              />
+            </section>
+
+            {/* Column 3: Cytoscape Physics Graph & Proof (5 cols) */}
+            <section className="lg:col-span-5 h-full">
+              <GraphCanvas
+                graphData={graphData}
+                result={result}
+                onOpenApproval={() => setIsApprovalOpen(true)}
+                onLaunchSimulator={() => setActiveView("simulator")}
+              />
+            </section>
+          </main>
+        </div>
       )}
 
       {/* Modals */}

@@ -142,22 +142,22 @@ export const AIChatModal: React.FC<AIChatModalProps> = ({ isOpen, onClose, onSwi
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
-      <div className="bg-slate-900 border border-indigo-500/30 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl shadow-indigo-950/50 overflow-hidden ring-1 ring-white/10">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#040308]/85 backdrop-blur-md animate-fade-in">
+      <div className="bg-[#09080e] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl shadow-[#8d62eb]/15 overflow-hidden ring-1 ring-white/10">
         {/* Modal Header */}
-        <div className="px-5 py-4 border-b border-slate-800 bg-slate-950/60 flex items-center justify-between">
+        <div className="px-5 py-4 border-b border-white/10 bg-[#040308]/90 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 ring-1 ring-white/20">
-              <Bot className="w-5 h-5 text-indigo-100" />
+            <div className="w-9 h-9 rounded-xl bg-[#8d62eb]/20 border border-[#8d62eb]/40 flex items-center justify-center text-[#a982ff] shadow-lg shadow-[#8d62eb]/20">
+              <Bot className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-white text-sm">ChokePoint Cyber Defense Copilot</h3>
-                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">
+                <h3 className="font-bold text-white text-sm tracking-tight font-sans">ChokePoint Cyber Defense Copilot</h3>
+                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#8d62eb]/15 text-[#a982ff] border border-[#8d62eb]/30 font-semibold">
                   Track 01 Agent
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-white/50 font-sans">
                 Trained on FalkorDB GraphBLAS, Dual-Node Flow Networks & Supply-Chain Min-Cuts
               </p>
             </div>
@@ -167,7 +167,7 @@ export const AIChatModal: React.FC<AIChatModalProps> = ({ isOpen, onClose, onSwi
               sound.playClick();
               onClose();
             }}
-            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition"
+            className="text-white/40 hover:text-white p-1 rounded-lg hover:bg-white/5 transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -181,25 +181,25 @@ export const AIChatModal: React.FC<AIChatModalProps> = ({ isOpen, onClose, onSwi
               className={`flex gap-3 ${m.role === "user" ? "justify-end" : "justify-start"}`}
             >
               {m.role === "assistant" && (
-                <div className="w-7 h-7 rounded-lg bg-indigo-950/80 border border-indigo-500/40 flex items-center justify-center flex-shrink-0 text-indigo-300 mt-0.5">
+                <div className="w-7 h-7 rounded-lg bg-[#040308] border border-[#8d62eb]/40 flex items-center justify-center flex-shrink-0 text-[#a982ff] mt-0.5 shadow-sm">
                   <Sparkles className="w-4 h-4" />
                 </div>
               )}
               <div
                 className={`max-w-[85%] rounded-xl p-3.5 leading-relaxed ${
                   m.role === "user"
-                    ? "bg-indigo-600 text-white font-medium shadow-md shadow-indigo-600/20"
-                    : "bg-slate-800/90 text-slate-200 border border-slate-700/70"
+                    ? "bg-white text-black font-semibold shadow-md shadow-white/10"
+                    : "bg-[#040308] text-white/90 border border-white/10"
                 }`}
               >
                 <p className="whitespace-pre-line">{m.text}</p>
 
                 {m.code && (
-                  <div className="mt-2.5 rounded-lg bg-slate-950 border border-slate-800 p-2.5 font-mono text-[11px] text-indigo-300 relative group overflow-x-auto">
+                  <div className="mt-2.5 rounded-lg bg-[#09080e] border border-white/10 p-2.5 font-mono text-[11px] text-[#a982ff] relative group overflow-x-auto">
                     <pre>{m.code}</pre>
                     <button
                       onClick={() => handleCopyCode(m.code!, idx)}
-                      className="absolute top-2 right-2 p-1 rounded bg-slate-800/80 hover:bg-slate-700 text-slate-300 opacity-0 group-hover:opacity-100 transition"
+                      className="absolute top-2 right-2 p-1 rounded bg-white/10 hover:bg-white/20 text-white/80 opacity-0 group-hover:opacity-100 transition"
                       title="Copy code"
                     >
                       {copiedIndex === idx ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
@@ -208,12 +208,12 @@ export const AIChatModal: React.FC<AIChatModalProps> = ({ isOpen, onClose, onSwi
                 )}
 
                 {m.chips && (
-                  <div className="mt-3 flex flex-wrap gap-1.5 pt-2 border-t border-slate-700/50">
+                  <div className="mt-3 flex flex-wrap gap-1.5 pt-2 border-t border-white/10">
                     {m.chips.map((chip, cIdx) => (
                       <button
                         key={cIdx}
                         onClick={() => handleSend(chip)}
-                        className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-slate-900/90 hover:bg-indigo-950 hover:text-indigo-200 hover:border-indigo-500/40 border border-slate-700 text-slate-300 transition text-left"
+                        className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-[#09080e] hover:bg-[#0d0b16] hover:text-white hover:border-[#8d62eb]/60 border border-white/10 text-white/70 transition text-left"
                       >
                         ⚡ {chip}
                       </button>
@@ -222,7 +222,7 @@ export const AIChatModal: React.FC<AIChatModalProps> = ({ isOpen, onClose, onSwi
                 )}
               </div>
               {m.role === "user" && (
-                <div className="w-7 h-7 rounded-lg bg-indigo-500 flex items-center justify-center flex-shrink-0 text-white mt-0.5">
+                <div className="w-7 h-7 rounded-lg bg-[#8d62eb] flex items-center justify-center flex-shrink-0 text-white mt-0.5">
                   <User className="w-4 h-4" />
                 </div>
               )}
@@ -232,19 +232,19 @@ export const AIChatModal: React.FC<AIChatModalProps> = ({ isOpen, onClose, onSwi
         </div>
 
         {/* Input Bar */}
-        <div className="p-3.5 border-t border-slate-800 bg-slate-950/80 flex items-center gap-2">
+        <div className="p-3.5 border-t border-white/10 bg-[#040308] flex items-center gap-2">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
             placeholder="Ask about FalkorDB GraphBLAS, algo.maxFlow, dual-node transformation..."
-            className="flex-1 bg-slate-900 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition font-sans"
+            className="flex-1 bg-[#09080e] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#8d62eb] focus:ring-1 focus:ring-[#8d62eb] transition font-sans"
           />
           <button
             onClick={() => handleSend()}
             disabled={!input.trim()}
-            className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-lg shadow-indigo-600/20"
+            className="px-4 py-2.5 rounded-xl bg-white hover:bg-white/90 disabled:opacity-30 text-black text-xs font-bold flex items-center gap-1.5 transition shadow-lg shadow-white/5"
           >
             <Send className="w-3.5 h-3.5" />
             <span>Send</span>

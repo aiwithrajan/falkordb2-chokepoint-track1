@@ -1,6 +1,7 @@
 import React from "react";
-import { Play, Package, ShieldAlert, Sparkles, CheckCircle2 } from "lucide-react";
+import { Play, Package, ShieldAlert, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
 import type { Preset } from "../types";
+import { sound } from "../utils/sound";
 
 interface TargetSelectorProps {
   system: string;
@@ -28,112 +29,129 @@ export const TargetSelector: React.FC<TargetSelectorProps> = ({
   isLoading
 }) => {
   return (
-    <div className="flex flex-col gap-4">
-      {/* Target Input Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg shadow-black/20">
-        <div className="flex items-center justify-between mb-3.5">
-          <h2 className="text-xs uppercase tracking-wider font-mono font-bold text-slate-300 flex items-center gap-2">
-            <Package className="w-4 h-4 text-indigo-400" />
-            <span>Target Package Inspection</span>
-          </h2>
-          <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/40">
+    <div className="flex flex-col gap-5 text-left font-sans">
+      {/* Target Input Bento Card */}
+      <div className="bg-[#09080e] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-5">
+        <div className="flex items-center justify-between pb-3 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <span className="text-[#a982ff] font-mono text-sm font-bold">&gt;</span>
+            <h2 className="text-xs uppercase tracking-wider font-mono font-bold text-white flex items-center gap-1.5">
+              <span>Target Inspection</span>
+            </h2>
+          </div>
+          <span className="text-[10px] font-mono text-[#a982ff] bg-[#8d62eb]/15 px-2.5 py-0.5 rounded-full border border-[#8d62eb]/30 font-semibold">
             Vault Cached
           </span>
         </div>
 
         {/* Inputs */}
-        <div className="space-y-3">
-          <div className="grid grid-cols-3 gap-2">
+        <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-2.5">
             <div>
-              <label className="block text-[11px] font-mono text-slate-400 mb-1">Ecosystem</label>
+              <label className="block text-[10px] font-mono uppercase tracking-wider text-[#737373] mb-1.5 font-semibold">
+                Ecosystem
+              </label>
               <select
                 value={system}
                 onChange={(e) => setSystem(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500"
+                className="w-full bg-[#040308] border border-white/10 hover:border-white/20 rounded-xl px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#8d62eb] transition"
               >
                 <option value="npm">npm</option>
                 <option value="pypi">PyPI</option>
               </select>
             </div>
             <div>
-              <label className="block text-[11px] font-mono text-slate-400 mb-1">Package</label>
+              <label className="block text-[10px] font-mono uppercase tracking-wider text-[#737373] mb-1.5 font-semibold">
+                Package
+              </label>
               <input
                 type="text"
                 value={pkg}
                 onChange={(e) => setPkg(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500"
+                className="w-full bg-[#040308] border border-white/10 hover:border-white/20 rounded-xl px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#8d62eb] transition"
               />
             </div>
             <div>
-              <label className="block text-[11px] font-mono text-slate-400 mb-1">Version</label>
+              <label className="block text-[10px] font-mono uppercase tracking-wider text-[#737373] mb-1.5 font-semibold">
+                Version
+              </label>
               <input
                 type="text"
                 value={version}
                 onChange={(e) => setVersion(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500"
+                className="w-full bg-[#040308] border border-white/10 hover:border-white/20 rounded-xl px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#8d62eb] transition"
               />
             </div>
           </div>
 
-          {/* Run Button */}
+          {/* Kog-Style High-Contrast Run Button */}
           <button
-            onClick={onRunAgent}
+            onClick={() => {
+              sound.playClick();
+              onRunAgent();
+            }}
             disabled={isLoading || !pkg || !version}
-            className={`w-full mt-2 py-2.5 px-4 rounded-lg font-semibold text-xs tracking-wide uppercase transition flex items-center justify-center gap-2 shadow-lg ${
+            className={`w-full mt-2 py-3 px-5 rounded-full font-bold text-xs tracking-wide uppercase transition-all flex items-center justify-center gap-2 ${
               isLoading
-                ? "bg-slate-800 text-slate-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-indigo-600/30 active:scale-[0.99]"
+                ? "bg-white/10 text-[#a982ff] border border-[#8d62eb]/40 cursor-wait animate-pulse"
+                : "bg-white text-black hover:bg-neutral-200 shadow-[0_0_25px_rgba(255,255,255,0.25)] transform hover:scale-[1.01] active:scale-[0.99]"
             }`}
           >
             {isLoading ? (
               <>
-                <span className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+                <span className="w-3.5 h-3.5 border-2 border-[#a982ff] border-t-transparent rounded-full animate-spin" />
                 <span>Traversing FalkorDB Graph...</span>
               </>
             ) : (
               <>
-                <Play className="w-4 h-4 fill-white" />
+                <Play className="w-3.5 h-3.5 fill-black" />
                 <span>Run ChokePoint Agent</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Preset Quick Selects */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg shadow-black/20">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xs uppercase tracking-wider font-mono font-bold text-slate-300 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Pre-Warmed Battlegrounds</span>
-          </h3>
-          <span className="text-[10px] text-slate-500 font-mono">1-Click Load</span>
+      {/* Preset Quick Selects Bento */}
+      <div className="bg-[#09080e] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <span className="text-[#a982ff] font-mono text-sm font-bold">&gt;</span>
+            <h3 className="text-xs uppercase tracking-wider font-mono font-bold text-white flex items-center gap-1.5">
+              <span>Battleground Targets</span>
+            </h3>
+          </div>
+          <span className="text-[10px] text-[#737373] font-mono">15ms Demo</span>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {presets.map((p) => {
             const isSelected = pkg === p.package && version === p.version;
             return (
               <button
                 key={p.key}
-                onClick={() => onSelectPreset(p)}
-                className={`w-full text-left p-2.5 rounded-lg border transition flex items-center justify-between text-xs ${
+                onClick={() => {
+                  sound.playClick();
+                  onSelectPreset(p);
+                }}
+                className={`w-full text-left p-3 rounded-xl border transition-all flex items-center justify-between text-xs ${
                   isSelected
-                    ? "bg-indigo-950/60 border-indigo-500/80 text-indigo-200"
-                    : "bg-slate-950/60 border-slate-800/80 hover:border-slate-700 text-slate-300"
+                    ? "bg-[#0d0b16] border-[#8d62eb] text-white shadow-[0_0_15px_rgba(141,98,235,0.25)]"
+                    : "bg-[#040308] border-white/10 hover:border-white/20 text-[#b5b5b5]"
                 }`}
               >
                 <div>
-                  <div className="font-mono font-semibold flex items-center gap-1.5">
+                  <div className="font-mono font-bold flex items-center gap-1.5 text-white">
                     <span>{p.package}</span>
-                    <span className="text-[11px] text-slate-500">@{p.version}</span>
+                    <span className="text-[11px] text-[#737373]">@{p.version}</span>
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">
+                  <div className="text-[10px] text-[#737373] mt-0.5 font-mono">
                     {p.direct_deps_count} direct deps &bull; Transitive CVEs
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[10px] bg-rose-950/80 text-rose-300 border border-rose-800/50">
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[10px] bg-rose-950/70 text-rose-300 border border-rose-800/40 font-semibold">
                     <ShieldAlert className="w-3 h-3 text-rose-400" />
                     {p.vulnerabilities_count} CVEs
                   </span>
@@ -144,14 +162,14 @@ export const TargetSelector: React.FC<TargetSelectorProps> = ({
         </div>
       </div>
 
-      {/* The Problem Explainer Card */}
-      <div className="bg-gradient-to-br from-slate-900 to-indigo-950/30 border border-slate-800/80 rounded-xl p-4 text-xs text-slate-400">
-        <h4 className="font-semibold text-slate-200 flex items-center gap-1.5 mb-1.5">
-          <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
+      {/* Why FalkorDB Min-Cut Wins Bento */}
+      <div className="bg-[#09080e] border border-white/10 rounded-2xl p-5 space-y-2 text-xs text-[#b5b5b5]">
+        <div className="flex items-center gap-1.5 font-mono text-xs font-bold text-white">
+          <span className="text-[#a982ff]">&gt;</span>
           <span>Why FalkorDB Min-Cut Wins</span>
-        </h4>
-        <p className="leading-relaxed text-[11px]">
-          Traditional scanners demand 50 leaf updates, triggering breaking changes. ChokePoint models the dependency tree as a flow network in FalkorDB and computes the exact bottleneck upgrade that severs 100% of attack paths.
+        </div>
+        <p className="leading-relaxed text-[11px] pt-1">
+          Traditional scanners open 50 separate PRs, triggering breaking changes. ChokePoint models the dependency tree as a flow network in FalkorDB and computes the exact bottleneck upgrade that severs 100% of attack paths in 15.2ms.
         </p>
       </div>
     </div>
