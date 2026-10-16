@@ -5,10 +5,17 @@ import { AgentTelemetry } from "./components/AgentTelemetry";
 import { GraphCanvas } from "./components/GraphCanvas";
 import { ApprovalGateModal } from "./components/ApprovalGateModal";
 import { BenchmarkModal } from "./components/BenchmarkModal";
+import { HomeHero } from "./components/HomeHero";
+import { ExploitSimulator } from "./components/ExploitSimulator";
+import { ArchitecturePage } from "./components/ArchitecturePage";
+import { AIChatModal } from "./components/AIChatModal";
+import { sound } from "./utils/sound";
 import type { Preset, TraceStep, AnalysisResult, CytoscapeData } from "./types";
 
 export function App() {
   const [falkorConnected, setFalkorConnected] = useState(true);
+  const [activeView, setActiveView] = useState<"home" | "console" | "simulator" | "architecture">("home");
+
   const [system, setSystem] = useState("npm");
   const [pkg, setPkg] = useState("express");
   const [version, setVersion] = useState("4.16.0");
@@ -21,6 +28,7 @@ export function App() {
 
   const [isApprovalOpen, setIsApprovalOpen] = useState(false);
   const [isBenchmarkOpen, setIsBenchmarkOpen] = useState(false);
+  const [isAIChatOpen, setIsAIChatOpen] = useState(false);
 
   // Fetch presets and check health on load
   useEffect(() => {
@@ -52,6 +60,7 @@ export function App() {
   };
 
   const handleSelectPreset = (preset: Preset) => {
+    sound.playClick();
     setSystem(preset.system);
     setPkg(preset.package);
     setVersion(preset.version);
@@ -60,10 +69,20 @@ export function App() {
     loadGraph(preset.system, preset.package, preset.version);
   };
 
+  const handleSelectPresetFromExternal = (sys: string, p: string, v: string) => {
+    setSystem(sys);
+    setPkg(p);
+    setVersion(v);
+    setResult(null);
+    setTrace([]);
+    loadGraph(sys, p, v);
+  };
+
   const handleRunAgent = async () => {
     setIsLoading(true);
     setTrace([]);
     setResult(null);
+    sound.playClick();
 
     try {
       const res = await fetch("/api/analyze", {
@@ -76,10 +95,12 @@ export function App() {
       if (data.trace) {
         setTrace(data.trace);
       }
+      sound.playSuccess();
       // Refresh canvas with latest node states
       loadGraph(system, pkg, version);
     } catch (e) {
       console.error("Agent execution failed:", e);
+      sound.playAlarm();
     } finally {
       setIsLoading(false);
     }
@@ -98,6 +119,7 @@ export function App() {
         })
       });
       const d = await res.json();
+      sound.playShield();
       alert(d.message || "Remediation verified & PR diff generated!");
     } catch (e) {
       console.error("Error applying approval:", e);
@@ -105,48 +127,78 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+      {/* Global Futuristic Navigation Header */}
       <Header
         falkorConnected={falkorConnected}
+        activeView={activeView}
+        onSwitchView={setActiveView}
         onOpenBenchmark={() => setIsBenchmarkOpen(true)}
+        onOpenAIChat={() => setIsAIChatOpen(true)}
       />
 
-      {/* Main 3-Column Command Grid */}
-      <main className="flex-1 max-w-[1600px] w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* Column 1: Controls & Battleground Selector (3 cols) */}
-        <section className="lg:col-span-3">
-          <TargetSelector
-            system={system}
-            setSystem={setSystem}
-            pkg={pkg}
-            setPkg={setPkg}
-            version={version}
-            setVersion={setVersion}
-            presets={presets}
-            onSelectPreset={handleSelectPreset}
-            onRunAgent={handleRunAgent}
-            isLoading={isLoading}
-          />
-        </section>
+      {/* Main View Router */}
+      {activeView === "home" && (
+        <HomeHero
+          onEnterConsole={() => setActiveView("console")}
+          onOpenSimulator={() => setActiveView("simulator")}
+          onOpenArchitecture={() => setActiveView("architecture")}
+          onOpenBenchmark={() => setIsBenchmarkOpen(true)}
+          onOpenAIChat={() => setIsAIChatOpen(true)}
+          onSelectPreset={handleSelectPresetFromExternal}
+        />
+      )}
 
-        {/* Column 2: Agent Telemetry & Reasoning Log (4 cols) */}
-        <section className="lg:col-span-4 h-full">
-          <AgentTelemetry
-            trace={trace}
-            result={result}
-            isLoading={isLoading}
-          />
-        </section>
+      {activeView === "simulator" && (
+        <main className="flex-1">
+          <ExploitSimulator />
+        </main>
+      )}
 
-        {/* Column 3: Cytoscape Physics Graph & Proof (5 cols) */}
-        <section className="lg:col-span-5 h-full">
-          <GraphCanvas
-            graphData={graphData}
-            result={result}
-            onOpenApproval={() => setIsApprovalOpen(true)}
-          />
-        </section>
-      </main>
+      {activeView === "architecture" && (
+        <main className="flex-1">
+          <ArchitecturePage />
+        </main>
+      )}
+
+      {activeView === "console" && (
+        <main className="flex-1 max-w-[1650px] w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start animate-fade-in">
+          {/* Column 1: Controls & Battleground Selector (3 cols) */}
+          <section className="lg:col-span-3">
+            <TargetSelector
+              system={system}
+              setSystem={setSystem}
+              pkg={pkg}
+              setPkg={setPkg}
+              version={version}
+              setVersion={setVersion}
+              presets={presets}
+              onSelectPreset={handleSelectPreset}
+              onRunAgent={handleRunAgent}
+              isLoading={isLoading}
+            />
+          </section>
+
+          {/* Column 2: Agent Telemetry & Reasoning Log (4 cols) */}
+          <section className="lg:col-span-4 h-full">
+            <AgentTelemetry
+              trace={trace}
+              result={result}
+              isLoading={isLoading}
+            />
+          </section>
+
+          {/* Column 3: Cytoscape Physics Graph & Proof (5 cols) */}
+          <section className="lg:col-span-5 h-full">
+            <GraphCanvas
+              graphData={graphData}
+              result={result}
+              onOpenApproval={() => setIsApprovalOpen(true)}
+              onLaunchSimulator={() => setActiveView("simulator")}
+            />
+          </section>
+        </main>
+      )}
 
       {/* Modals */}
       <ApprovalGateModal
@@ -159,6 +211,13 @@ export function App() {
       <BenchmarkModal
         isOpen={isBenchmarkOpen}
         onClose={() => setIsBenchmarkOpen(false)}
+      />
+
+      <AIChatModal
+        isOpen={isAIChatOpen}
+        onClose={() => setIsAIChatOpen(false)}
+        onSelectPreset={handleSelectPresetFromExternal}
+        onSwitchView={setActiveView}
       />
     </div>
   );
