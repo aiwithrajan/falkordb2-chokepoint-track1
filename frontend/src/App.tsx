@@ -127,7 +127,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-[#040308] text-white flex flex-col font-sans selection:bg-[#8d62eb] selection:text-white">
       {/* Global Futuristic Navigation Header */}
       <Header
         falkorConnected={falkorConnected}

@@ -2,27 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-kog: #040308;
+  --accent-kog: #8d62eb;
+  --accent-light: #a982ff;
+  --card-kog: #09080e;
+  --border-kog: rgba(255, 255, 255, 0.1);
+  --text-dim: #b5b5b5;
+}
+
 body {
   margin: 0;
   padding: 0;
-  background-color: #090d16;
-  color: #f8fafc;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #040308;
+  color: #ffffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
 }
 
-/* Custom Scrollbars */
+::selection {
+  background: #8d62eb;
+  color: #ffffff;
+}
+
+/* Custom Minimalist Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #040308;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 3px;
+  background: #1d1d1b;
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #8d62eb;
 }
