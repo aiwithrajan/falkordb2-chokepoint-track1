@@ -4,6 +4,10 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, HTMLResponse
+import os
+
 from backend.config import settings
 from backend.graph.client import FalkorManager
 from backend.agent.loop import ChokePointAgent
@@ -29,6 +33,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Static files location (pre-built Obsidian UI frontend)
+STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+if not os.path.exists(STATIC_DIR):
+    STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend", "dist")
+
+if os.path.exists(STATIC_DIR):
+    assets_dir = os.path.join(STATIC_DIR, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
 # Mount MCP sub-app
 app.mount("/mcp", mcp_app)
@@ -173,6 +187,13 @@ class ApprovalRequest(BaseModel):
     changes: List[Dict[str, Any]]
 
 @app.get("/")
+def serve_root():
+    if os.path.exists(STATIC_DIR):
+        index_file = os.path.join(STATIC_DIR, "index.html")
+        if os.path.isfile(index_file):
+            return FileResponse(index_file)
+    return root_status()
+
 @app.get("/api")
 def root_status():
     return {
@@ -421,7 +442,13 @@ async def catch_all_api(path: str, request: Request):
 
     logger.info(f"Catch-all router dispatched: raw='{path}' subpath='{raw_subpath}' clean='{clean}' method={request.method}")
 
-    if clean in ("", "api"):
+    if clean in ("api",):
+        return root_status()
+    elif clean == "":
+        if os.path.exists(STATIC_DIR):
+            index_file = os.path.join(STATIC_DIR, "index.html")
+            if os.path.isfile(index_file):
+                return FileResponse(index_file)
         return root_status()
     elif clean in ("health", "api/health"):
         return healthcheck()
@@ -440,6 +467,16 @@ async def catch_all_api(path: str, request: Request):
     elif clean in ("approve", "api/approve"):
         body = await request.json()
         return approve_and_generate_pr(ApprovalRequest(**body))
+
+    # Check for static assets (e.g. /assets/index-xxx.js or /index.html)
+    if os.path.exists(STATIC_DIR):
+        asset_file = os.path.join(STATIC_DIR, clean)
+        if os.path.isfile(asset_file):
+            return FileResponse(asset_file)
+        if not clean.startswith("api"):
+            index_file = os.path.join(STATIC_DIR, "index.html")
+            if os.path.isfile(index_file):
+                return FileResponse(index_file)
 
     return {
         "status": "healthy",
