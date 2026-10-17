@@ -12,3 +12,5 @@ demo_video/temp_video/
 demo_video/page@*.webm
 demo_video/chokepoint_walkthrough.webm
 demo_video/chokepoint_demo_narrated.webm
+.vercel
+.env*
