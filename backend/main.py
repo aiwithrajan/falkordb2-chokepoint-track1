@@ -1,6 +1,6 @@
 import logging
 from typing import Any, Dict, List, Optional
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -172,6 +172,25 @@ class ApprovalRequest(BaseModel):
     version: str
     changes: List[Dict[str, Any]]
 
+@app.get("/")
+@app.get("/api")
+def root_status():
+    return {
+        "status": "healthy",
+        "service": "ChokePoint API Gateway",
+        "version": "1.0.0",
+        "engine": "FalkorDB GraphBLAS",
+        "endpoints": [
+            "/api/health",
+            "/api/presets",
+            "/api/analyze",
+            "/api/approve",
+            "/api/graph/{system}/{package}/{version}",
+            "/api/ablation"
+        ]
+    }
+
+@app.get("/health")
 @app.get("/api/health")
 def healthcheck():
     db_alive = False
@@ -190,10 +209,12 @@ def healthcheck():
         "engine": "FalkorDB GraphBLAS (Connected)" if db_alive else "FalkorDB GraphBLAS (Simulation / Vault Preset Mode)"
     }
 
+@app.get("/presets")
 @app.get("/api/presets")
 def get_presets():
     return {"presets": SnapshotVault.list_presets()}
 
+@app.post("/analyze")
 @app.post("/api/analyze")
 def run_agent_analysis(req: AnalyzeRequest):
     try:
@@ -206,6 +227,7 @@ def run_agent_analysis(req: AnalyzeRequest):
         logger.warning(f"FalkorDB execution fallback: {e}")
         return get_fallback_analysis(req.system, req.package, req.version)
 
+@app.post("/approve")
 @app.post("/api/approve")
 def approve_and_generate_pr(req: ApprovalRequest):
     overrides = {}
@@ -232,6 +254,7 @@ def approve_and_generate_pr(req: ApprovalRequest):
         "message": f"Successfully verified zero-vulnerability patch for {req.package}@{req.version}."
     }
 
+@app.get("/graph/{system}/{package}/{version}")
 @app.get("/api/graph/{system}/{package}/{version}")
 def get_cytoscape_graph(system: str, package: str, version: str):
     graph_name = f"chokepoint:{system.lower()}:{package}:{version}"
@@ -366,6 +389,7 @@ def get_cytoscape_graph(system: str, package: str, version: str):
         }
     }
 
+@app.get("/ablation")
 @app.get("/api/ablation")
 def run_ablation(system: str = "npm", package: str = "express", version: str = "4.16.0"):
     try:
@@ -377,3 +401,39 @@ def run_ablation(system: str = "npm", package: str = "express", version: str = "
     except Exception as e:
         logger.warning(f"Live ablation fallback: {e}")
         return get_fallback_ablation(system, package, version)
+
+@app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+async def catch_all_api(path: str, request: Request):
+    """
+    Guaranteed catch-all fallback router ensuring all Vercel rewritten and stripped paths resolve.
+    """
+    clean = path.strip("/")
+    if clean.startswith("api/"):
+        clean = clean[4:]
+
+    logger.info(f"Catch-all router dispatched: raw='{path}' clean='{clean}' method={request.method}")
+
+    if clean in ("health", "api/health"):
+        return healthcheck()
+    elif clean in ("presets", "api/presets"):
+        return get_presets()
+    elif clean.startswith("ablation") or clean.startswith("api/ablation"):
+        params = dict(request.query_params)
+        return run_ablation(params.get("system", "npm"), params.get("package", "express"), params.get("version", "4.16.0"))
+    elif "graph/" in clean:
+        parts = clean.split("graph/")[-1].split("/")
+        if len(parts) >= 3:
+            return get_cytoscape_graph(parts[0], parts[1], parts[2])
+    elif clean in ("analyze", "api/analyze"):
+        body = await request.json()
+        return run_agent_analysis(AnalyzeRequest(**body))
+    elif clean in ("approve", "api/approve"):
+        body = await request.json()
+        return approve_and_generate_pr(ApprovalRequest(**body))
+
+    return {
+        "status": "healthy",
+        "service": "ChokePoint API Gateway",
+        "version": "1.0.0",
+        "path_received": path
+    }
