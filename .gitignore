@@ -5,3 +5,10 @@ node_modules/
 dist/
 .DS_Store
 .pytest_cache/
+
+# Demo recording scratch files
+demo_video/audio/
+demo_video/temp_video/
+demo_video/page@*.webm
+demo_video/chokepoint_walkthrough.webm
+demo_video/chokepoint_demo_narrated.webm

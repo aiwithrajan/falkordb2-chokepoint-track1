@@ -5,6 +5,7 @@
 [![FalkorDB](https://img.shields.io/badge/Graph_Database-FalkorDB-6366f1?style=for-the-badge&logo=redis)](https://www.falkordb.com/)
 [![GraphBLAS](https://img.shields.io/badge/Core_Engine-GraphBLAS_Sparse_Matrix-amber.svg?style=for-the-badge)](https://graphblas.org/)
 [![Model Context Protocol](https://img.shields.io/badge/MCP-FastMCP_JSON--RPC_2.0-violet.svg?style=for-the-badge)](https://modelcontextprotocol.io/)
+[![Demo Video](https://img.shields.io/badge/Demo_Video-1080p_Narrated_Walkthrough-red.svg?style=for-the-badge)](demo_video/chokepoint_demo_narrated.mp4)
 [![Acceptance Tests](https://img.shields.io/badge/Acceptance_Tests-Passing_6%2F6-brightgreen.svg?style=for-the-badge)](tests/)
 [![PRD](https://img.shields.io/badge/Product_Spec-Verified_PRD_PDF-blue.svg?style=for-the-badge)](ChokePoint_PRD_FalkorDB.pdf)
 
