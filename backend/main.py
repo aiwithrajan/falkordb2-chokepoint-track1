@@ -407,13 +407,23 @@ async def catch_all_api(path: str, request: Request):
     """
     Guaranteed catch-all fallback router ensuring all Vercel rewritten and stripped paths resolve.
     """
-    clean = path.strip("/")
+    raw_subpath = (
+        request.query_params.get("_path")
+        or request.headers.get("x-matched-path", "")
+        or request.headers.get("x-forwarded-uri", "")
+        or path
+    )
+    clean = raw_subpath.strip("/")
     if clean.startswith("api/"):
         clean = clean[4:]
+    if clean.startswith("index.py"):
+        clean = clean[8:].strip("/")
 
-    logger.info(f"Catch-all router dispatched: raw='{path}' clean='{clean}' method={request.method}")
+    logger.info(f"Catch-all router dispatched: raw='{path}' subpath='{raw_subpath}' clean='{clean}' method={request.method}")
 
-    if clean in ("health", "api/health"):
+    if clean in ("", "api"):
+        return root_status()
+    elif clean in ("health", "api/health"):
         return healthcheck()
     elif clean in ("presets", "api/presets"):
         return get_presets()
@@ -435,5 +445,6 @@ async def catch_all_api(path: str, request: Request):
         "status": "healthy",
         "service": "ChokePoint API Gateway",
         "version": "1.0.0",
-        "path_received": path
+        "path_received": path,
+        "clean_resolved": clean
     }
