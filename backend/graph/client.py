@@ -19,17 +19,32 @@ class FalkorManager:
         self.host = settings.FALKORDB_HOST
         self.port = settings.FALKORDB_PORT
         self.password = settings.FALKORDB_PASSWORD or None
+        self.client = None
         logger.info(f"Connecting to FalkorDB at {self.host}:{self.port}...")
-        self.client = falkordb.FalkorDB(
-            host=self.host,
-            port=self.port,
-            password=self.password
-        )
+        self._try_reconnect()
 
-    def select_graph(self, graph_name: str) -> Graph:
-        return self.client.select_graph(graph_name)
+    def _try_reconnect(self):
+        try:
+            self.client = falkordb.FalkorDB(
+                host=self.host,
+                port=self.port,
+                password=self.password
+            )
+            logger.info("Successfully connected to FalkorDB.")
+        except Exception as e:
+            logger.warning(f"Could not connect to FalkorDB at {self.host}:{self.port}: {e}. Operating in graceful simulation mode.")
+            self.client = None
+
+    def select_graph(self, graph_name: str) -> Optional[Graph]:
+        if not self.client:
+            self._try_reconnect()
+        return self.client.select_graph(graph_name) if self.client else None
 
     def list_graphs(self) -> List[str]:
+        if not self.client:
+            self._try_reconnect()
+        if not self.client:
+            return []
         try:
             return self.client.list_graphs()
         except Exception as e:
@@ -40,6 +55,8 @@ class FalkorManager:
         """
         Executes native FalkorDB GRAPH.COPY command for sub-3ms multigraph cloning.
         """
+        if not self.client:
+            return False
         try:
             self.client.connection.execute_command("GRAPH.COPY", src, dst)
             return True
@@ -48,6 +65,8 @@ class FalkorManager:
             return False
 
     def delete_graph(self, graph_name: str) -> bool:
+        if not self.client:
+            return False
         try:
             self.client.connection.execute_command("GRAPH.DELETE", graph_name)
             return True
@@ -56,6 +75,10 @@ class FalkorManager:
             return False
 
     def ping(self) -> bool:
+        if not self.client:
+            self._try_reconnect()
+        if not self.client:
+            return False
         try:
             self.client.connection.ping()
             return True

@@ -1,0 +1,6 @@
+demo_video/
+tests/
+.git/
+.venv/
+frontend/node_modules/
+scripts/
