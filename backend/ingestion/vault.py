@@ -243,6 +243,8 @@ class SnapshotVault:
         key = f"{system.lower()}:{package}@{version}"
         return VAULT_DATA.get(key)
 
+    get_preset = get_snapshot
+
     @staticmethod
     def list_presets() -> List[Dict[str, str]]:
         presets = []

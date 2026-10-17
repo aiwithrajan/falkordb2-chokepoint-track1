@@ -40,7 +40,7 @@ def get_fallback_analysis(system: str, package: str, version: str) -> Dict[str, 
     preset = SnapshotVault.get_preset(system, package, version)
     if not preset:
         try:
-            preset = LiveResolver.resolve_package_tree(system, package, version)
+            preset = LiveResolver.resolve_package(system, package, version)
         except Exception:
             preset = None
 
@@ -323,7 +323,7 @@ def get_cytoscape_graph(system: str, package: str, version: str):
         preset = SnapshotVault.get_preset(system, package, version)
         if not preset:
             try:
-                preset = LiveResolver.resolve_package_tree(system, package, version)
+                preset = LiveResolver.resolve_package(system, package, version)
             except Exception:
                 preset = None
 
